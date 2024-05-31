@@ -31,14 +31,15 @@ class Dot:
     draw.ellipse((self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius), fill=(255, 0, 0))
 
 class ImageDataset(Dataset):
-  def __init__(self, root_dir, transform=None, size=None):
+  def __init__(self, root_dir, transform=None, size=None, random_seed=42):
     self.root_dir = root_dir
     self.transform = transform
+    self.random = random.Random(random_seed)
     self.files = os.listdir(self.root_dir)
     if size:
       if len(self.files) < size:
         raise Exception(f'Only found {len(self.files)} files in root directory, but the requested dataset size is {size}')
-      self.files = random.sample(self.files, size)
+      self.files = self.random.sample(self.files, size)
 
   def __getitem__(self, idx):
     filename = self.files[idx]
