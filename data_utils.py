@@ -127,7 +127,7 @@ def generate_data(size, path, delete_existing=True, image_size=(32, 32), dots_ra
     img.save(f'{path}/{n_dots}_{i}.png')
 
 def download_data_dots(root='data_dots'):
-  url = 'https://goforeoy-my.sharepoint.com/:u:/g/personal/sebastian_landl_gofore_com/EbxvzSlpQsRNoUH740Ip67cBzpbE5UCAj1FtMovm9liJOg?e=DkhOht'
+  url = 'https://goforeoy-my.sharepoint.com/:u:/g/personal/sebastian_landl_gofore_com/EUqwEeg7O6pJtzZPoaVr2KwBJ6mz7M2REFAIs9IFar9R2Q?e=Iug3C1'
   filename = 'data_dots.zip'
 
   if os.path.exists(root):
