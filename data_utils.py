@@ -5,10 +5,6 @@ import os
 import shutil
 import random
 from pathlib import Path
-from torch.utils.data import Dataset, DataLoader
-import torch
-from torchvision import transforms
-from onedrivedownloader import download
 
 class Dot:
   def __init__(self, x, y, radius):
@@ -29,27 +25,6 @@ class Dot:
 
   def draw(self, draw):
     draw.ellipse((self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius), fill=(255, 0, 0))
-
-class ImageDataset(Dataset):
-  def __init__(self, root_dir, transform=None, size=None, random_seed=42):
-    self.root_dir = root_dir
-    self.transform = transform
-    self.random = random.Random(random_seed)
-    self.files = os.listdir(self.root_dir)
-    if size:
-      if len(self.files) < size:
-        raise Exception(f'Only found {len(self.files)} files in root directory, but the requested dataset size is {size}')
-      self.files = self.random.sample(self.files, size)
-
-  def __getitem__(self, idx):
-    filename = self.files[idx]
-    img_path = os.path.join(self.root_dir, filename)
-    img = Image.open(img_path)
-    img = self.transform(img) if self.transform is not None else img
-
-    dot_count = torch.tensor([int(filename.split('_')[0])])
-
-    return img, dot_count
 
   def __len__(self):
     return len(self.files)
@@ -125,23 +100,3 @@ def generate_data(size, path, delete_existing=True, image_size=(32, 32), dots_ra
   for i in tqdm(range(size)):
     img, n_dots = generate_image(image_size=image_size, dots_range=dots_range, radius_range=radius_range, min_distance=min_distance, inserts_path=inserts_path)
     img.save(f'{path}/{n_dots}_{i}.png')
-
-def download_data_dots(root='data_dots'):
-  url = 'https://goforeoy-my.sharepoint.com/:u:/g/personal/sebastian_landl_gofore_com/EUqwEeg7O6pJtzZPoaVr2KwBJ6mz7M2REFAIs9IFar9R2Q?e=Iug3C1'
-  filename = 'data_dots.zip'
-
-  if os.path.exists(root):
-    print(f'Folder {root} already exists. Not downloading.')
-    return
-  download(url, filename=filename, unzip=True, unzip_path=root, clean=True)
-
-def prepare_data(path, size=1000, transform=None, batch_size=128, shuffle=True):
-  if transform is None:
-    transform = transforms.ToTensor()
-
-  dataset = ImageDataset(root_dir=path, transform=transform, size=size)
-  dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=shuffle)
-  return dataloader, dataset
-
-if __name__ == '__main__':
-  download_data_dots()
