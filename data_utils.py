@@ -26,9 +26,6 @@ class Dot:
   def draw(self, draw):
     draw.ellipse((self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius), fill=(255, 0, 0))
 
-  def __len__(self):
-    return len(self.files)
-
 def test_dot():
   d1 = Dot(10, 10, 5)
   d2 = Dot(20, 20, 8)
